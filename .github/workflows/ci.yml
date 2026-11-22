@@ -15,6 +15,15 @@ jobs:
               with:
                   node-version: 24
                   cache: npm
+            - name: Restore TypeScript build cache
+              uses: actions/cache@v4
+              with:
+                  path: |
+                      packages/*/dist
+                      packages/*/tsconfig.tsbuildinfo
+                  key: ${{ runner.os }}-node24-tsbuild-${{ hashFiles('package-lock.json', 'tsconfig*.json', 'packages/*/tsconfig*.json') }}-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-node24-tsbuild-${{ hashFiles('package-lock.json', 'tsconfig*.json', 'packages/*/tsconfig*.json') }}-
             - run: npm ci
             - run: npm run format:check
             - run: npm run typecheck
